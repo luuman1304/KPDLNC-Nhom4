@@ -131,8 +131,15 @@ function renderSelectedSeries() {
   $("adi").textContent = result.cluster.adi.toFixed(3);
   $("cv2").textContent = result.cluster.cv2.toFixed(3);
   $("warnings").innerHTML = result.warnings.map((w) => `<li>${w}</li>`).join("");
+  const totalForecast = result.forecast.reduce((sum, r) => sum + Number(r.forecast || 0), 0);
+  const avgForecast = totalForecast / Math.max(1, result.forecast.length);
+  $("forecastSummary").innerHTML = `
+    <div><span>Tổng forecast ${result.forecast.length} ngày</span><strong>${formatNumber(totalForecast)} sản phẩm</strong></div>
+    <div><span>Trung bình forecast/ngày</span><strong>${formatNumber(avgForecast)} sản phẩm/ngày</strong></div>
+    <p>Forecast là số lượng bán kỳ vọng theo từng ngày. Tổng ${result.forecast.length} ngày được tính bằng cách cộng toàn bộ các dòng dự báo.</p>
+  `;
   $("forecastTable").innerHTML = result.forecast
-    .map((r) => `<tr><td>${r.date}</td><td>${r.horizon}</td><td>${Number(r.forecast).toFixed(3)}</td></tr>`)
+    .map((r) => `<tr><td>${r.date}</td><td>D+${r.horizon}</td><td>${Number(r.forecast).toFixed(3)}</td></tr>`)
     .join("");
 }
 
