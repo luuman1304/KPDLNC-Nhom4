@@ -25,7 +25,7 @@ def health() -> dict:
 def overview() -> dict:
     profiles = registry.cluster_profiles.to_dict(orient="records")
     if registry.mode == "artifact_available":
-        warnings = ["Đã có artifact đã train; forecast dùng LightGBM artifacts từ origin 1913."]
+        warnings = []
     elif registry.mode == "production":
         warnings = []
     else:

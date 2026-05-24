@@ -104,8 +104,6 @@ def run_forecast(request: ForecastRequest) -> ForecastResponse:
     warnings = build_warnings(request.records, forecast)
     if adapter_warning:
         warnings.insert(0, adapter_warning)
-    elif registry.mode == "artifact_available":
-        warnings.insert(0, "Forecast được tạo bằng LightGBM artifacts đã train từ origin 1913.")
     elif registry.mode != "production":
         warnings.insert(
             0,

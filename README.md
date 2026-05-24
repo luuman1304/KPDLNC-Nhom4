@@ -24,6 +24,32 @@ Open:
 http://127.0.0.1:8000
 ```
 
+## Application screenshots
+
+### Home page and data upload
+
+The home page lets users download the Excel template, download a sample CSV, upload sales history, and select the forecasting model.
+
+![Home page](Pic/Homepage.png)
+
+### Uploaded historical sales
+
+After a CSV upload, the app identifies each item-store series, summarizes historical sales, and lets the user select which series to inspect.
+
+![Historical sales](Pic/History.png)
+
+### Forecast result and cluster interpretation
+
+The forecast view displays the selected series, its demand cluster, operational warnings, actual-vs-forecast chart, and the daily forecast table.
+
+![Forecast result](Pic/Forecast.png)
+
+### Forecast summary
+
+The result table clarifies that each forecast value is a daily expected sales quantity and adds total expected demand for the 28-day horizon.
+
+![Forecast summary](Pic/Forecast2.png)
+
 ## Recreate app artifacts
 
 After running the research pipeline that produces a compatible output folder:
