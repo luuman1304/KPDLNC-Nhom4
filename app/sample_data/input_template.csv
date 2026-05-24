@@ -1,0 +1,2 @@
+item_id,store_id,state_id,category_id,department_id,date,sales,sell_price,event_name,event_type,snap
+ITEM_001,STORE_001,CA,FOODS,FOODS_1,2026-01-01,3,2.99,,,0

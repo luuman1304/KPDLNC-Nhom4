@@ -1,0 +1,37 @@
+# OS/editor
+.DS_Store
+~$*.docx
+Document/.~*.docx
+*.tmp
+
+# Python
+.venv/
+__pycache__/
+app/backend/.pycache/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Node/frontend
+node_modules/
+dist/
+build/
+.next/
+.vite/
+
+# Large local data and experiment outputs
+Data/
+outputs*/
+reports*/
+
+# Model artifacts are handled separately unless intentionally added with Git LFS
+app/artifacts/models/*
+app/artifacts/preprocessors/*
+app/artifacts/cluster/*
+!app/artifacts/**/README.md
+!app/artifacts/metadata/*.json
+
+# Local env
+.env
+.env.*

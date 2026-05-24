@@ -1,0 +1,11 @@
+{
+  "version": "0.1.0",
+  "mode": "artifact_available",
+  "source_run": "outputs_app_artifact_origin1913_tweedie_a0_b1_c",
+  "copied": {
+    "cluster_profiles": true,
+    "model_metric_summary": true,
+    "trained_model_artifacts_found": true
+  },
+  "note": "Trained artifacts were exported. Backend still needs the production LightGBM inference adapter to use these artifacts instead of the demo forecaster."
+}

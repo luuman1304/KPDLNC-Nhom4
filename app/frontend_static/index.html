@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Hệ thống dự báo nhu cầu bán lẻ</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main>
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Cluster-aware demand forecasting</p>
+          <h1>Hệ thống dự báo nhu cầu bán lẻ</h1>
+        </div>
+        <span id="mode" class="mode">loading</span>
+      </header>
+
+      <div id="notice" class="notice hidden"></div>
+
+      <section class="workspace priority-workspace">
+        <aside class="panel input-panel">
+          <h2>Nhập dữ liệu</h2>
+          <input id="fileInput" type="file" accept=".csv" />
+          <a class="button secondary" href="/api/input-template">Tải template Excel</a>
+          <a id="downloadSample" class="button secondary" href="/api/sample-series" download="sample_series_m5_forecast.csv">Tải sample CSV</a>
+          <div id="sampleInfo" class="sample-info hidden"></div>
+          <label for="model">Mô hình</label>
+          <select id="model">
+            <option value="A0">A0 - Global LightGBM</option>
+            <option value="B1">B1 - Global + cluster label</option>
+            <option value="C" selected>C - Cluster-specific LightGBM</option>
+          </select>
+          <button id="runForecast" type="button" class="button primary">Chạy dự báo</button>
+          <pre id="error" class="error hidden"></pre>
+        </aside>
+
+        <section class="panel chart-panel">
+          <div class="chart-head">
+            <div>
+              <h2>Doanh số lịch sử và dự báo</h2>
+            </div>
+          </div>
+          <canvas id="chart" width="980" height="420"></canvas>
+          <p class="chart-note">Actual: doanh số lịch sử user upload. Forecast: 28 ngày dự báo sinh từ mô hình đã chọn.</p>
+        </section>
+      </section>
+
+      <section class="metrics">
+        <div class="metric"><span>Horizon</span><strong>28 ngày</strong></div>
+        <div class="metric"><span>Mô hình mặc định</span><strong>C</strong></div>
+        <div class="metric"><span>Số cụm</span><strong>K=3</strong></div>
+        <div class="metric"><span>Dữ liệu hiện tại</span><strong id="recordCount">0 dòng</strong></div>
+      </section>
+
+      <section id="seriesSection" class="panel table-panel history-panel hidden">
+        <div class="table-head">
+          <h2>Danh sách sản phẩm-cửa hàng</h2>
+          <span id="seriesSummary" class="table-summary"></span>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>Item</th><th>Store</th><th>Category</th><th>Số ngày</th><th>Tổng sales</th><th>Zero ratio</th><th>Cluster</th><th>Trạng thái</th>
+            </tr>
+          </thead>
+          <tbody id="seriesTable"></tbody>
+        </table>
+      </section>
+
+      <section id="results" class="results hidden">
+        <div class="panel">
+          <h2>Cụm nhu cầu</h2>
+          <div id="clusterBadge" class="cluster-badge"></div>
+          <h3 id="clusterName"></h3>
+          <p id="clusterText"></p>
+          <dl>
+            <div><dt>Mean sales</dt><dd id="meanSales"></dd></div>
+            <div><dt>Zero-sales ratio</dt><dd id="zeroRatio"></dd></div>
+            <div><dt>ADI</dt><dd id="adi"></dd></div>
+            <div><dt>CV²</dt><dd id="cv2"></dd></div>
+          </dl>
+        </div>
+        <div class="panel">
+          <h2>Cảnh báo</h2>
+          <ul id="warnings"></ul>
+        </div>
+        <div class="panel table-panel">
+          <div class="table-head">
+            <h2>Bảng forecast</h2>
+            <button id="exportCsv" type="button" class="button secondary">Export CSV</button>
+          </div>
+          <table>
+            <thead><tr><th>Ngày</th><th>Horizon</th><th>Forecast</th></tr></thead>
+            <tbody id="forecastTable"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="historySection" class="panel table-panel history-panel hidden">
+        <div class="table-head">
+          <h2>Doanh số lịch sử đã nhập</h2>
+          <span id="historySummary" class="table-summary"></span>
+        </div>
+        <table>
+          <thead><tr><th>Ngày</th><th>Item</th><th>Store</th><th>Sales</th><th>Sell price</th><th>SNAP</th></tr></thead>
+          <tbody id="historyTable"></tbody>
+        </table>
+      </section>
+    </main>
+    <script src="./app.js"></script>
+  </body>
+</html>
