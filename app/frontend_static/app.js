@@ -4,6 +4,7 @@ let lastResult = null;
 let batchResult = null;
 let selectedSeriesKey = null;
 let sampleRecords = [];
+let isForecastLoading = false;
 
 const $ = (id) => document.getElementById(id);
 
@@ -21,6 +22,7 @@ async function init() {
     $("notice").classList.remove("hidden");
   }
   await loadSamplePreview();
+  updateSelectedModelMetric();
   drawChart();
 }
 
@@ -86,12 +88,14 @@ function renderSampleInfo(rows) {
 
 async function runForecast() {
   $("error").classList.add("hidden");
+  updateSelectedModelMetric();
   const modelName = $("model").value;
   if (!records.length) {
     $("error").textContent = "Bạn cần upload file CSV trước khi chạy dự báo. Có thể tải sample CSV rồi upload lại để thử.";
     $("error").classList.remove("hidden");
     return;
   }
+  setForecastLoading(true);
   try {
     const response = await fetch(`${API_BASE}/forecast-batch`, {
       method: "POST",
@@ -110,7 +114,24 @@ async function runForecast() {
   } catch (err) {
     $("error").textContent = err.message ?? String(err);
     $("error").classList.remove("hidden");
+  } finally {
+    setForecastLoading(false);
   }
+}
+
+function setForecastLoading(loading) {
+  isForecastLoading = loading;
+  $("runForecast").disabled = loading;
+  $("runForecast").textContent = loading ? "Đang chạy model..." : "Chạy dự báo";
+  $("fileInput").disabled = loading;
+  $("model").disabled = loading;
+  $("forecastLoading").classList.toggle("hidden", !loading);
+  $("chart").setAttribute("aria-busy", loading ? "true" : "false");
+}
+
+function updateSelectedModelMetric() {
+  const selectedOption = $("model").selectedOptions[0];
+  $("selectedModelName").textContent = selectedOption?.textContent ?? $("model").value;
 }
 
 function renderSelectedSeries() {
@@ -130,7 +151,6 @@ function renderSelectedSeries() {
   $("zeroRatio").textContent = result.cluster.zero_sales_ratio.toFixed(3);
   $("adi").textContent = result.cluster.adi.toFixed(3);
   $("cv2").textContent = result.cluster.cv2.toFixed(3);
-  $("warnings").innerHTML = result.warnings.map((w) => `<li>${w}</li>`).join("");
   const totalForecast = result.forecast.reduce((sum, r) => sum + Number(r.forecast || 0), 0);
   const avgForecast = totalForecast / Math.max(1, result.forecast.length);
   $("forecastSummary").innerHTML = `
@@ -460,6 +480,8 @@ $("fileInput").addEventListener("change", async (event) => {
   renderHistoryTable();
 });
 $("runForecast").addEventListener("click", runForecast);
+$("model").addEventListener("change", updateSelectedModelMetric);
+$("model").addEventListener("input", updateSelectedModelMetric);
 $("exportCsv").addEventListener("click", exportCsv);
 
 init();

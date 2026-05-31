@@ -33,6 +33,11 @@ function App() {
     const forecast = result?.forecast.map((p) => ({ date: p.date, actual: null, forecast: p.forecast })) ?? [];
     return [...history, ...forecast];
   }, [records, result]);
+  const selectedModelLabel = {
+    A0: "A0 - Global LightGBM",
+    B1: "B1 - Global + cluster label",
+    C: "C - Cluster-specific LightGBM",
+  }[model];
 
   async function runForecast() {
     setLoading(true);
@@ -84,7 +89,7 @@ function App() {
 
       <section className="metrics">
         <Metric title="Horizon" value="28 ngày" />
-        <Metric title="Mô hình mặc định" value="C" />
+        <Metric title="Mô hình áp dụng" value={selectedModelLabel} />
         <Metric title="Số cụm" value="K=3" />
         <Metric title="Dữ liệu hiện tại" value={`${records.length} ngày`} />
       </section>
@@ -147,24 +152,19 @@ function App() {
 
       {result ? (
         <section className="results">
-          <div className="panel">
-            <h2>Cụm nhu cầu</h2>
-            <div className="cluster-id">Cluster {result.cluster.cluster_id}</div>
-            <h3>{result.cluster.cluster_name}</h3>
-            <p>{result.cluster.interpretation}</p>
+          <div className="panel cluster-panel">
+            <div className="cluster-copy">
+              <h2>Cụm nhu cầu</h2>
+              <div className="cluster-id">Cluster {result.cluster.cluster_id}</div>
+              <h3>{result.cluster.cluster_name}</h3>
+              <p>{result.cluster.interpretation}</p>
+            </div>
             <dl>
               <div><dt>Mean sales</dt><dd>{result.cluster.mean_sales.toFixed(3)}</dd></div>
               <div><dt>Zero-sales ratio</dt><dd>{result.cluster.zero_sales_ratio.toFixed(3)}</dd></div>
               <div><dt>ADI</dt><dd>{result.cluster.adi.toFixed(3)}</dd></div>
               <div><dt>CV²</dt><dd>{result.cluster.cv2.toFixed(3)}</dd></div>
             </dl>
-          </div>
-
-          <div className="panel">
-            <h2>Cảnh báo</h2>
-            <ul className="warnings">
-              {result.warnings.map((warning) => <li key={warning}>{warning}</li>)}
-            </ul>
           </div>
 
           <div className="panel table-panel">
@@ -206,4 +206,3 @@ function Metric({ title, value }: { title: string; value: string }) {
 }
 
 createRoot(document.getElementById("root")!).render(<App />);
-

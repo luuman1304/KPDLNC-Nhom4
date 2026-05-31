@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Hệ thống dự báo nhu cầu bán lẻ</title>
-    <link rel="stylesheet" href="./styles.css" />
+    <link rel="stylesheet" href="./styles.css?v=20260530-forecast-ui" />
   </head>
   <body>
     <main>
@@ -26,12 +26,16 @@
           <a id="downloadSample" class="button secondary" href="/api/sample-series" download="sample_series_m5_forecast.csv">Tải sample CSV</a>
           <div id="sampleInfo" class="sample-info hidden"></div>
           <label for="model">Mô hình</label>
-          <select id="model">
+          <select id="model" onchange="updateSelectedModelMetric()" oninput="updateSelectedModelMetric()">
             <option value="A0">A0 - Global LightGBM</option>
             <option value="B1">B1 - Global + cluster label</option>
             <option value="C" selected>C - Cluster-specific LightGBM</option>
           </select>
           <button id="runForecast" type="button" class="button primary">Chạy dự báo</button>
+          <div id="forecastLoading" class="loading-state hidden" role="status" aria-live="polite">
+            <span class="spinner" aria-hidden="true"></span>
+            <span>Model đang chạy, vui lòng chờ kết quả dự báo...</span>
+          </div>
           <pre id="error" class="error hidden"></pre>
         </aside>
 
@@ -48,7 +52,7 @@
 
       <section class="metrics">
         <div class="metric"><span>Horizon</span><strong>28 ngày</strong></div>
-        <div class="metric"><span>Mô hình mặc định</span><strong>C</strong></div>
+        <div class="metric"><span>Mô hình áp dụng</span><strong id="selectedModelName">C - Cluster-specific LightGBM</strong></div>
         <div class="metric"><span>Số cụm</span><strong>K=3</strong></div>
         <div class="metric"><span>Dữ liệu hiện tại</span><strong id="recordCount">0 dòng</strong></div>
       </section>
@@ -69,21 +73,19 @@
       </section>
 
       <section id="results" class="results hidden">
-        <div class="panel">
-          <h2>Cụm nhu cầu</h2>
-          <div id="clusterBadge" class="cluster-badge"></div>
-          <h3 id="clusterName"></h3>
-          <p id="clusterText"></p>
+        <div class="panel cluster-panel">
+          <div class="cluster-copy">
+            <h2>Cụm nhu cầu</h2>
+            <div id="clusterBadge" class="cluster-badge"></div>
+            <h3 id="clusterName"></h3>
+            <p id="clusterText"></p>
+          </div>
           <dl>
             <div><dt>Mean sales</dt><dd id="meanSales"></dd></div>
             <div><dt>Zero-sales ratio</dt><dd id="zeroRatio"></dd></div>
             <div><dt>ADI</dt><dd id="adi"></dd></div>
             <div><dt>CV²</dt><dd id="cv2"></dd></div>
           </dl>
-        </div>
-        <div class="panel">
-          <h2>Cảnh báo</h2>
-          <ul id="warnings"></ul>
         </div>
         <div class="panel table-panel">
           <div class="table-head">
@@ -109,6 +111,6 @@
         </table>
       </section>
     </main>
-    <script src="./app.js"></script>
+    <script src="./app.js?v=20260530-forecast-ui"></script>
   </body>
 </html>

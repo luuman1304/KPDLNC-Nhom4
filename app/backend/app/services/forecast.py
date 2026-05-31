@@ -104,7 +104,7 @@ def run_forecast(request: ForecastRequest) -> ForecastResponse:
     warnings = build_warnings(request.records, forecast)
     if adapter_warning:
         warnings.insert(0, adapter_warning)
-    elif registry.mode != "production":
+    elif registry.mode == "demo":
         warnings.insert(
             0,
             "Backend đang chạy demo mode vì chưa có pretrained LightGBM/scaler/clustering artifacts thật.",
